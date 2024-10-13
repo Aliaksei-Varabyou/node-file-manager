@@ -3,7 +3,7 @@ import { stdin as input, stdout as output, chdir, cwd } from 'node:process';
 import { homedir } from 'node:os';
 
 import { getUserName, parseArgs } from "./helpers/cli.js";
-import { doOperation } from './helpers/operations.js';
+import { doOperation } from './helpers/operation.js';
 
 // Greeting Block
 const args = parseArgs();
@@ -19,18 +19,23 @@ const rl = readline.createInterface({
 });
 rl.prompt();
 
+// prompt operations until exit
 try {
   rl.on('line', line => {
-    const operation = line.trim();
-    if (operation === '.exit' || operation === 'exit') {
+    const income = line.trim();
+    if (income === '.exit' || income === 'exit') {
       rl.close();
     } else {
-      doOperation(operation);
-      rl.prompt();
+      doOperation(income).then(() => {;
+        // change prompt if working directory was changed
+        rl.setPrompt(`You are currently in ${cwd()}\nEnter command: `);
+        rl.prompt();
+      });
     }
   }).on('close', () => {
-    console.log(`Thank you for using File Manager, ${username}, goodbye!`);
+    // finishing block
+    console.log(`\nThank you for using File Manager, ${username}, goodbye!`);
   });
 } catch (err) {
-  console.error(err);
+  throw err;
 }
