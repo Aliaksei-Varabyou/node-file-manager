@@ -33,10 +33,18 @@ const ls = async () => {
         Type: file.isDirectory() ? 'directory' : 'file'
       };
     }));
+
+    const sortedFileInfo = fileInfo.sort((a, b) => {
+      if( a.Type > b.Type) return 1;
+      if( a.Type < b.Type) return -1;
+      if( a.Name > b.Name) return 1;
+      if( a.Name < b.Name) return -1;
+      return 0;
+    });
   
-    console.table(fileInfo);
+    console.table(sortedFileInfo);
   } catch (err) {
-    inputError();
+    inputError(err);
   }
 };
 

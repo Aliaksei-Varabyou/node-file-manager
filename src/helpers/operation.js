@@ -35,13 +35,13 @@ export const doOperation = async (income) => {
       await nwdOperation(operation, incomeParts);
       break;
     case 'FS':
-      fsOperation(operation);
+      await fsOperation(operation, incomeParts);
       break;
     case 'OS':
-      osOperation(operation, incomeParts);
+      await osOperation(operation, incomeParts);
       break;
     case 'MP':
-      mpOperation(operation);
+      await mpOperation(operation, incomeParts);
       break;
     default:
       operationError();
@@ -53,6 +53,7 @@ export const operationError = () => {
   console.error(OPERATION_FAILED);
 };
 
-export const inputError = () => {
+export const inputError = (err) => {
   console.error(INVALID_INPUT);
+  if (err) console.error(err);
 };
