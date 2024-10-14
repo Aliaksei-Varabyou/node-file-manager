@@ -1,39 +1,123 @@
-import { promises as fsPromises } from 'fs';
+import { promises as fsPromises, createReadStream, createWriteStream } from 'node:fs';
+import { cwd } from 'node:process';
+import { join } from 'node:path';
+import { pipeline } from 'node:stream/promises';
+import { Writable } from 'node:stream';
 
 import { inputError, operationError } from "../operation.js";
+import { WITH_2_ARGUMENTS } from '../../constants.js';
 
-export const checkPathExist = async (filePath) => {
+const checkPathExist = async (filePath) => {
   try {
     await fsPromises.access(filePath);
+    return true;
   } catch (err) {
-    if ((err.code = 'ENOENT')) {
-      inputError();
+    if ((err.code === 'ENOENT')) {
+      return false;
     } else {
       throw err;
     }
   }
 };
 
+// Read file and print it's content in console (should be done using Readable stream)
 export const cat = async (incomeParts) => {
   try {
     const filePath = incomeParts[0];
-    await checkPathExist(filePath);
-    const content = await fsPromises.readFile(filePath, 'utf-8');
-    console.log(content);
+    if (await checkPathExist(filePath)) {
+      const readStream = createReadStream(filePath, 'utf-8');
+      await pipeline(
+        readStream,
+        new Writable({
+          write(chunk, _, callback) {
+            console.log(chunk.toString());
+            callback();
+          }
+        })
+      );
+    } else {
+      inputError();
+    }
   } catch (err) {
     throw err;
   }
 };
 
-export const add = async (incomeParts) => {}
+// Create empty file in current working directory
+export const add = async (incomeParts) => {
+  try {
+    const filePath = join(cwd(), incomeParts[0]);
+    await fsPromises.writeFile(filePath, '');
+  } catch(err) {
+    throw err;
+  }
+};
 
-export const rn = async (incomeParts) => {}
+// Rename file (content should remain unchanged)
+export const rn = async (incomeParts) => {
+  try {
+    const renamedFilePath = incomeParts[0];
+    const newFilePath = incomeParts[1];
+    const renamedExists = await checkPathExist(renamedFilePath);
+    const newExists = await checkPathExist(newFilePath);
+    if (renamedExists && !newExists) {
+      fsPromises.rename(renamedFilePath, newFilePath);
+    } else {
+      inputError();
+    }
+  } catch(err) {
+    throw err;
+  }
+};
 
-export const cp = async (incomeParts) => {}
+// Copy file (should be done using Readable and Writable streams)
+export const cp = async (incomeParts) => {
+  const source = incomeParts[0];
+  const destination = incomeParts[1];
+  try {
+    const sourceExist = await checkPathExist(source);
+    const destinationExist = await checkPathExist(destination);
 
-export const mv = async (incomeParts) => {}
+    if (sourceExist && !destinationExist) {
+      const readStream = createReadStream(source);
+      const writeStream = createWriteStream(destination);
 
-export const rm = async (incomeParts) => {}
+      readStream.pipe(writeStream);
+
+      readStream.on('error', (err) => {
+        console.error('Error reading file');
+      });
+      writeStream.on('error', (err) => {
+        console.error('Error writing file');
+      });
+    } else {
+      inputError();
+    }
+  } catch(err) {
+    throw err;
+  }
+};
+
+// Delete file
+export const rm = async (incomeParts) => {
+  try {
+    const filePath = join(cwd(), incomeParts[0]);
+    await fsPromises.rm(filePath);
+  } catch(err) {
+    throw err;
+  }
+};
+
+// Move file (same as copy but initial file is deleted,
+// copying part should be done using Readable and Writable streams)
+export const mv = async (incomeParts) => {
+  try {
+    await cp(incomeParts);
+    await rm(incomeParts);
+  } catch(err) {
+    throw err;
+  }
+};
 
 export const fsOperation = async (operation, incomeParts) => {
   const operations = {
@@ -45,6 +129,12 @@ export const fsOperation = async (operation, incomeParts) => {
     rm: rm
   };
   try {
+    if (!incomeParts[0]) {
+      return inputError();
+    }
+    if (WITH_2_ARGUMENTS.includes(operation) && !incomeParts[1]) {
+      return inputError();
+    }
     await operations[operation](incomeParts);
   } catch (err) {
     operationError();

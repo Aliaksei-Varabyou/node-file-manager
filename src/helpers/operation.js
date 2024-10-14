@@ -53,7 +53,6 @@ export const operationError = () => {
   console.error(OPERATION_FAILED);
 };
 
-export const inputError = (err) => {
+export const inputError = () => {
   console.error(INVALID_INPUT);
-  if (err) console.error(err);
 };
