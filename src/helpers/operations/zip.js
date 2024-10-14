@@ -53,6 +53,5 @@ export const zipOperation = async (operation, incomeParts) => {
     }
   } catch (err) {
     operationError();
-    throw err;
   }
 };

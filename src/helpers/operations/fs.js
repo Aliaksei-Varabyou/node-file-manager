@@ -90,8 +90,10 @@ const cp = async (incomeParts) => {
       writeStream.on('error', (err) => {
         console.error('Error writing file');
       });
+      return true;
     } else {
       inputError();
+      return false;
     }
   } catch(err) {
     throw err;
@@ -102,7 +104,11 @@ const cp = async (incomeParts) => {
 const rm = async (incomeParts) => {
   try {
     const filePath = join(cwd(), incomeParts[0]);
-    await fsPromises.rm(filePath);
+    if (await checkPathExist(filePath)) {
+      await fsPromises.rm(filePath);
+    } else {
+      inputError();
+    }
   } catch(err) {
     throw err;
   }
@@ -112,8 +118,13 @@ const rm = async (incomeParts) => {
 // copying part should be done using Readable and Writable streams)
 const mv = async (incomeParts) => {
   try {
-    await cp(incomeParts);
-    await rm(incomeParts);
+    if (await checkPathExist(incomeParts[0])) {
+      if (await cp(incomeParts)) {
+        await rm(incomeParts);
+      }
+    } else {
+      inputError();
+    }
   } catch(err) {
     throw err;
   }
