@@ -22,3 +22,13 @@ export const OS_OPERATIONS = [OP_OS];
 export const MP_OPERATIONS = [OP_HASH, OP_COMPRESS, OP_DECOMPRESS];
 
 export const WITH_2_ARGUMENTS = [OP_RN, OP_CP, OP_MV, OP_COMPRESS, OP_DECOMPRESS];
+
+export const OS_EOL = '--EOL';
+export const OS_CPUS = '--cpus';
+export const OS_HOMEDIR = '--homedir';
+export const OS_USERNAME = '--username';
+export const OS_ARCHITECTURE = '--architecture';
+
+export const OS_ARGUMENTS = [
+  OS_EOL, OS_CPUS, OS_HOMEDIR, OS_USERNAME, OS_ARCHITECTURE
+];
