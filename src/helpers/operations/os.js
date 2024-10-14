@@ -39,23 +39,23 @@ const arch = async () => {
   console.log(`CPU architecture for which Node.js binary has compiled: ${os.arch()}`);
 };
 
-export const osWithArg = async (arg) => {
+const osWithArg = async (arg) => {
   try {
     switch (arg) {
       case OS_EOL:
-        await eol();
+        eol();
         break;
       case OS_CPUS:
-        await cpus();
+        cpus();
         break;
       case OS_HOMEDIR:
-        await homedir();
+        homedir();
         break;
       case OS_USERNAME:
-        await username();
+        username();
         break;
       case OS_ARCHITECTURE:
-        await arch();
+        arch();
         break;
       default:
         inputError();

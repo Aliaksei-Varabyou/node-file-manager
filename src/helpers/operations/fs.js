@@ -7,7 +7,7 @@ import { Writable } from 'node:stream';
 import { inputError, operationError } from "../operation.js";
 import { WITH_2_ARGUMENTS } from '../../constants.js';
 
-const checkPathExist = async (filePath) => {
+export const checkPathExist = async (filePath) => {
   try {
     await fsPromises.access(filePath);
     return true;
@@ -21,7 +21,7 @@ const checkPathExist = async (filePath) => {
 };
 
 // Read file and print it's content in console (should be done using Readable stream)
-export const cat = async (incomeParts) => {
+const cat = async (incomeParts) => {
   try {
     const filePath = incomeParts[0];
     if (await checkPathExist(filePath)) {
@@ -44,7 +44,7 @@ export const cat = async (incomeParts) => {
 };
 
 // Create empty file in current working directory
-export const add = async (incomeParts) => {
+const add = async (incomeParts) => {
   try {
     const filePath = join(cwd(), incomeParts[0]);
     await fsPromises.writeFile(filePath, '');
@@ -54,7 +54,7 @@ export const add = async (incomeParts) => {
 };
 
 // Rename file (content should remain unchanged)
-export const rn = async (incomeParts) => {
+const rn = async (incomeParts) => {
   try {
     const renamedFilePath = incomeParts[0];
     const newFilePath = incomeParts[1];
@@ -71,7 +71,7 @@ export const rn = async (incomeParts) => {
 };
 
 // Copy file (should be done using Readable and Writable streams)
-export const cp = async (incomeParts) => {
+const cp = async (incomeParts) => {
   const source = incomeParts[0];
   const destination = incomeParts[1];
   try {
@@ -99,7 +99,7 @@ export const cp = async (incomeParts) => {
 };
 
 // Delete file
-export const rm = async (incomeParts) => {
+const rm = async (incomeParts) => {
   try {
     const filePath = join(cwd(), incomeParts[0]);
     await fsPromises.rm(filePath);
@@ -110,7 +110,7 @@ export const rm = async (incomeParts) => {
 
 // Move file (same as copy but initial file is deleted,
 // copying part should be done using Readable and Writable streams)
-export const mv = async (incomeParts) => {
+const mv = async (incomeParts) => {
   try {
     await cp(incomeParts);
     await rm(incomeParts);

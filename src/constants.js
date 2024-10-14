@@ -19,7 +19,8 @@ export const OP_DECOMPRESS = 'decompress';
 export const NWD_OPERATIONS = [OP_UP, OP_CD, OP_LS];
 export const FS_OPERATIONS = [OP_CAT, OP_ADD, OP_RN, OP_CP, OP_MV, OP_RM];
 export const OS_OPERATIONS = [OP_OS];
-export const MP_OPERATIONS = [OP_HASH, OP_COMPRESS, OP_DECOMPRESS];
+export const HASH_OPERATIONS = [OP_HASH];
+export const ZIP_OPERATIONS = [OP_COMPRESS, OP_DECOMPRESS];
 
 export const WITH_2_ARGUMENTS = [OP_RN, OP_CP, OP_MV, OP_COMPRESS, OP_DECOMPRESS];
 

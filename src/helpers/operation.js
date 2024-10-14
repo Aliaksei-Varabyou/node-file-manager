@@ -1,15 +1,17 @@
 import {
   FS_OPERATIONS,
+  HASH_OPERATIONS,
   INVALID_INPUT,
-  MP_OPERATIONS,
   NWD_OPERATIONS,
   OPERATION_FAILED,
-  OS_OPERATIONS
+  OS_OPERATIONS,
+  ZIP_OPERATIONS
 } from "../constants.js";
 import { fsOperation } from "./operations/fs.js";
-import { mpOperation } from "./operations/mp.js";
+import { hashOperation } from "./operations/hash.js";
 import { nwdOperation } from "./operations/nwd.js";
 import { osOperation } from "./operations/os.js";
+import { zipOperation } from "./operations/zip.js";
 
 const getOperationType = (operation) => {
   if (NWD_OPERATIONS.includes(operation)) {
@@ -21,8 +23,11 @@ const getOperationType = (operation) => {
   if (OS_OPERATIONS.includes(operation)) {
     return 'OS';
   }
-  if (MP_OPERATIONS.includes(operation)) {
-    return 'MP';
+  if (HASH_OPERATIONS.includes(operation)) {
+    return 'HASH';
+  }
+  if (ZIP_OPERATIONS.includes(operation)) {
+    return 'ZIP';
   }
   return null;
 }
@@ -40,8 +45,11 @@ export const doOperation = async (income) => {
     case 'OS':
       await osOperation(operation, incomeParts);
       break;
-    case 'MP':
-      await mpOperation(operation, incomeParts);
+    case 'HASH':
+      await hashOperation(operation, incomeParts);
+      break;
+    case 'ZIP':
+      await zipOperation(operation, incomeParts);
       break;
     default:
       operationError();
