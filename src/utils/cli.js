@@ -1,4 +1,4 @@
-const USER = 'username';
+import { USER } from "../constants.js";
 
 const parseArgs = () => {
   const args = [];

@@ -1,8 +1,9 @@
 import { createInterface } from 'node:readline/promises';
 import { chdir, cwd, stdin as input, stdout as output } from 'node:process';
 import { getUserName } from "./utils/cli.js";
-import { setColor, writeMessage } from './utils/messages.js';
+import { logError, setColor, writeMessage } from './utils/messages.js';
 import { homedir } from 'node:os';
+import { doOperation } from './utils/operations.js';
 
 
 const userName = getUserName();
@@ -14,12 +15,20 @@ const rl = createInterface({ input, output,
 });
 
 rl.prompt();
-
-rl.on('line', line => {
-  console.log(`Received: ${line}`);
-  rl.prompt();
-});
-
-rl.on('close', () => {
-  writeMessage(`Thank you for using File Manager, ${userName}, goodbye!`, 'green');
-})
+try {
+  rl.on('line', line => {
+    const operation = line.trim();
+    if (operation === '.exit' || operation === 'exit') {
+      rl.close();
+    } else {
+      doOperation(operation).then(() => {
+        rl.prompt();
+      });
+    }
+  })
+  .on('close', () => {
+    writeMessage(`Thank you for using File Manager, ${userName}, goodbye!`, 'green');
+  })
+} catch {
+  logError('Something wrong!');
+}

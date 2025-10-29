@@ -10,3 +10,11 @@ const colors = {
 export const writeMessage = (message, color = 'white') => {
   console.log(setColor(`\n--------\n${message}\n--------`, colors[color] || 37));
 }
+
+export const logSuccess = (message) => {
+  console.log(setColor(`\n${message}\n`, 32));
+}
+
+export const logError = (error) => {
+  console.log(setColor(`\n${error}\n`, 31));
+}

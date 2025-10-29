@@ -1,0 +1,50 @@
+import { logError } from "./messages.js";
+import {
+  FS_OPERATIONS,
+  MP_OPERATIONS,
+  NWD_OPERATIONS,
+  OPERATION_FAILED,
+  OS_OPERATIONS
+} from "../constants.js";
+import { fsOperation } from "../operations/fs.js";
+import { mpOperation } from "../operations/mp.js";
+import { nwdOperation } from "../operations/nwd.js";
+import { osOperation } from "../operations/os.js";
+
+const getOperationType = (operation) => {
+  if (NWD_OPERATIONS.includes(operation)) {
+    return 'NWD';
+  }
+  if (FS_OPERATIONS.includes(operation)) {
+    return 'FS';
+  }
+  if (OS_OPERATIONS.includes(operation)) {
+    return 'OS';
+  }
+  if (MP_OPERATIONS.includes(operation)) {
+    return 'MP';
+  }
+  return null;
+}
+
+export const doOperation = async (income) => {
+  const incomeParts = income.split(' ').filter(item => item !== '');
+  const operation = incomeParts.shift();
+  switch (getOperationType(operation)) {
+    case 'NWD':
+      await nwdOperation(operation, incomeParts);
+      break;
+    case 'FS':
+      fsOperation(operation);
+      break;
+    case 'OS':
+      osOperation(operation, incomeParts);
+      break;
+    case 'MP':
+      mpOperation(operation);
+      break;
+    default:
+      logError(OPERATION_FAILED);
+      break;
+  };
+}
