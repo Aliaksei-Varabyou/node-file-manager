@@ -1,20 +1,20 @@
 import { createInterface } from 'node:readline/promises';
-import { chdir, cwd, stdin as input, stdout as output } from 'node:process';
-import { getUserName } from "./utils/cli.js";
-import { logError, setColor, writeMessage } from './utils/messages.js';
+import { chdir, stdin as input, stdout as output } from 'node:process';
 import { homedir } from 'node:os';
-import { doOperation } from './utils/operations.js';
+
+import { getUserName } from "./utils/cli.js";
+import { getPrompt, logError, writeByeMessage, writeGreeting } from './utils/messages.js';
+import { doOperation, operationError } from './utils/operations.js';
 
 
 const userName = getUserName();
-writeMessage(`Welcome to the File Manager, ${userName}!`, 'green');
+writeGreeting(userName);
+console.log('Directory for test::', process.cwd());
 chdir(homedir());
 
-const rl = createInterface({ input, output, 
-  prompt: `${setColor(`You are currently in <<${cwd()}>>`, 36)}\n${setColor('Enter command', 33)} > `
-});
-
+const rl = createInterface({ input, output, prompt: getPrompt() });
 rl.prompt();
+
 try {
   rl.on('line', line => {
     const operation = line.trim();
@@ -22,13 +22,15 @@ try {
       rl.close();
     } else {
       doOperation(operation).then(() => {
+        // change prompt if working directory was changed
+        rl.setPrompt(getPrompt());
         rl.prompt();
       });
     }
   })
   .on('close', () => {
-    writeMessage(`Thank you for using File Manager, ${userName}, goodbye!`, 'green');
+    writeByeMessage(userName);
   })
 } catch {
-  logError('Something wrong!');
+  logError(operationError());
 }

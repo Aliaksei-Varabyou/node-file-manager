@@ -1,3 +1,15 @@
+export const writeGreeting = (userName) => {
+  writeMessage(`Welcome to the File Manager, ${userName}!`, 'green');
+}
+
+export const writeByeMessage = (userName) => {
+  writeMessage(`Thank you for using File Manager, ${userName}, goodbye!`, 'green');
+}
+
+export const getPrompt = () => {
+  return `${setColor(`You are currently in <<${process.cwd()}>>`, 36)}\n${setColor('Enter command', 33)} > `;
+}
+
 export const setColor = (text, code) => `\x1b[${code}m${text}\x1b[0m`;
 const colors = {
   'red': 31,

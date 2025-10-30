@@ -4,6 +4,7 @@ import {
   MP_OPERATIONS,
   NWD_OPERATIONS,
   OPERATION_FAILED,
+  INVALID_INPUT,
   OS_OPERATIONS
 } from "../constants.js";
 import { fsOperation } from "../operations/fs.js";
@@ -35,16 +36,24 @@ export const doOperation = async (income) => {
       await nwdOperation(operation, incomeParts);
       break;
     case 'FS':
-      fsOperation(operation);
+      await fsOperation(operation);
       break;
     case 'OS':
-      osOperation(operation, incomeParts);
+      await osOperation(operation, incomeParts);
       break;
     case 'MP':
-      mpOperation(operation);
+      await mpOperation(operation);
       break;
     default:
-      logError(OPERATION_FAILED);
+      operationError();
       break;
   };
+}
+
+export const operationError = () => {
+   logError(OPERATION_FAILED);
+}
+
+export const inputError = () => {
+   logError(INVALID_INPUT);
 }
