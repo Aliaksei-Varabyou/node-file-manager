@@ -5,7 +5,8 @@ export const INVALID_INPUT = 'Invalid input';
 export const NWD_OPERATIONS = ['up', 'cd', 'ls'];
 export const FS_OPERATIONS = ['cat', 'add', 'rn', 'cp', 'mv', 'rm'];
 export const OS_OPERATIONS = ['os'];
-export const MP_OPERATIONS = ['hash', 'compress', 'decompress'];
+export const HASH_OPERATIONS = ['hash'];
+export const ZIP_OPERATIONS = ['compress', 'decompress'];
 
 export const OS_EOL = '--EOL';
 export const OS_CPUS = '--cpus';

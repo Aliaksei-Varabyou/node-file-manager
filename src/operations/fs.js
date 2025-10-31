@@ -8,7 +8,7 @@ import { inputError } from '../utils/operations.js';
 import { cwd } from 'node:process';
 import { logError, logSuccess } from '../utils/messages.js';
 
-const pathExists = async (path) => {
+export const pathExists = async (path) => {
   try {
     await access(path);
     return true;
