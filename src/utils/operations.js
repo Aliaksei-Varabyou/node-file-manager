@@ -36,7 +36,7 @@ export const doOperation = async (income) => {
       await nwdOperation(operation, incomeParts);
       break;
     case 'FS':
-      await fsOperation(operation);
+      await fsOperation(operation, incomeParts);
       break;
     case 'OS':
       await osOperation(operation, incomeParts);

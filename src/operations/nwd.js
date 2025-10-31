@@ -41,7 +41,6 @@ const ls = async () => {
   
     console.table(sortedFileInfo);
   } catch {
-    console.log('!!!!!');
     inputError();
   }
 }
