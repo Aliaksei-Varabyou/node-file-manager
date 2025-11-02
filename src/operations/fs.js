@@ -53,7 +53,24 @@ const add = async (input) => {
     await promises.writeFile(filePath, '');
     logSuccess(`File ${input[0]} created successfully in the folder ${cwd()}`);
     return true;
-  } catch{err} {
+  } catch(err) {
+    logError('Error:', err);
+    return false;
+  }
+}
+
+// Create new directory in current working directory:
+const mkdir = async(input) => {
+  try {
+    const filePath = join(cwd(), input[0]);
+    if (await pathExists(filePath)) {
+      logError(`Directory ${input[0]} already exist`);
+      return false;
+    }
+    await promises.mkdir(filePath);
+    logSuccess(`Directory ${input[0]} created successfully in the folder ${cwd()}`);
+    return true;
+  } catch(err) {
     logError('Error:', err);
     return false;
   }
@@ -122,11 +139,11 @@ const rm = async (input) => {
   try {
     const filePath = join(cwd(), input[0]);
     if (!(await pathExists(filePath))) {
-      logError(`File ${input[0]} don't exist`);
+      logError(`${input[0]} don't exist`);
       return false;
     }
-    await promises.rm(filePath);
-    logSuccess(`File ${input[0]} was deleted`);
+    await promises.rm(filePath, {recursive: true});
+    logSuccess(`${input[0]} was deleted`);
     return true;
   } catch(err) {
     logError('Error:', err);
@@ -150,7 +167,7 @@ const mv = async (input) => {
   }
 }
 
-const FS_FUNCTIONS = { cat, add, rn, cp, mv, rm };
+const FS_FUNCTIONS = { cat, add, mkdir, rn, cp, mv, rm };
 const WITH_2_ARGUMENTS = ['rn', 'cp', 'mv'];
 
 export const fsOperation = async (operation, incomeParts) => {
